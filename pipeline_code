@@ -5,6 +5,8 @@ Isolate Genomes
 /home/jpodowski/src/bbmap/bbduk.sh  in="${i//_R1_001.fastq.gz}_interleaved_decontam_nohuman.fastq.gz" out="${i//_R1_001.fastq.gz}_interleaved_decontam_nohuman_qtrimmed.fastq.gz"  trimq=30 qtrim=r
 /home/jpodowski/src/bbmap/bbnorm.sh in="${i//_R1_001.fastq.gz}_interleaved_decontam_nohuman_qtrimmed.fastq.gz" out="${i//_R1_001.fastq.gz}_interleaved_decontam_nohuman_qtrimmed_bbnorm.fastq.gz" target=100 mindepth=2
 
+spades.py -m 100 --12 "${i}" -t 48 --isolate -o "${i//_interleaved_decontam_nohuman_qtrimmed_bbnorm.fastq.gz}_spades"
+
 
 Metagenomes
 
