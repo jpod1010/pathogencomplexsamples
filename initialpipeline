@@ -4,7 +4,9 @@ files were downloaded from ANL Sequencing core as R1 and R2 and were interleaved
 
 all methods derived from decontaminated and quality controlled as follows
 
-/home/jpodowski/src/bbmap/bbduk.sh  in="${i}" out="${i//.fastq.gz}_decontam.fastq.gz"  ref=/home/jpodowski/src/bbmap/resources/adapters.fa k=31 hdist=1
+/home/jpodowski/src/bbmap/bbduk.sh  in="${i}" out="${i//.fastq.gz}_decontam.fastq.gz"  ref=/home/jpodowski/src/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
+
+/home/jpodowski/src/bbmap/removehuman.sh path=/home/jpodowski/databases/humangenomes/ in=${i} outu=${i//.fastq.gz}_nohuman.fastq.gz; done
 
 /home/jpodowski/src/bbmap/bbduk.sh  in="${i}" out="${i//.fastq.gz}_qtrimmed.fastq.gz"  trimq=30 qtrim=r
 
