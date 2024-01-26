@@ -1,0 +1,35 @@
+README for processing of B anthracis metagenomes
+
+files were downloaded from ANL Sequencing core as R1 and R2 and were interleaved using reformat.sh
+
+all methods derived from decontaminated and quality controlled as follows
+
+/home/jpodowski/src/bbmap/bbduk.sh  in="${i}" out="${i//.fastq.gz}_decontam.fastq.gz"  ref=/home/jpodowski/src/bbmap/resources/adapters.fa k=31 hdist=1
+
+/home/jpodowski/src/bbmap/bbduk.sh  in="${i}" out="${i//.fastq.gz}_qtrimmed.fastq.gz"  trimq=30 qtrim=r
+
+for method 1, metagenomic assembly then binning, the following method was used
+
+bbnorm.sh in="${i}" out="${i//.fastq.gz}_bbnorm.fastq.gz" target=40 mindepth=2
+
+/home/jpodowski/src/SPAdes-3.15.4-Linux/bin/spades.py --meta --12 "${i}" -m 500 -t 12
+
+assembly file was then binning using BV-BRC Metagenomic Binner
+
+for method 2, B. anthracis read extract using Ames Ancestor Mapping then 'isolate' assembly
+
+Bacillus anthracis 'Ames Ancestor' GCF_000008445.1 downloaded from https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/445/GCF_000008445.1_ASM844v1/GCF_000008445.1_ASM844v1_genomic.fna.gz
+
+bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
+
+for i in *_decontam_qtrimmed.fq.gz; do bowtie2 --interleaved "${i}" --sensitive --no-unal -p 12 -S "${i//_interleaved_decontam_qtrimmed.fq.gz}_ag_BanthracisAmes.sam" -x BanthracisAmes.index; done
+
+for i in *.sam; do /home/jpodowski/src/bbmap/reformat.sh in="${i}" out="${i//.sam}.fastq.gz" pairedonly=t 
+
+bbnorm.sh in="${i}" out="${i//.fastq.gz}_bbnorm.fastq.gz" target=40 mindepth=2
+
+for i in *_bbnorm.fastq.gz ; do /home/jpodowski/src/bbmap/repair.sh in="${i}" out="${i//.fastq.gz}_repaired.fastq.gz" outs="${i//.fastq.gz}_singleton.fastq.gz" ; done
+
+for i in *_bbnorm_repaired.fastq.gz; do /home/jpodowski/src/SPAdes-3.15.4-Linux/bin/spades.py -m 100 --pe1-12 "${i}" --pe1-s "${i//_repaired.fastq.gz}_singleton.fastq.gz" -t 12 --trusted-contigs GCF_000008445.1_ASM844v1_genomic.fa -o "${i//_bbnorm_repaired.fastq.gz}" --isolate; done
+
+for i in *_bbnorm_repaired.fastq.gz; do /home/jpodowski/src/SPAdes-3.15.4-Linux/bin/spades.py -m 100 --pe1-12 "${i}" --pe1-s "${i//_repaired.fastq.gz}_singleton.fastq.gz" -t 12  -o "${i//_bbnorm_repaired.fastq.gz}_notrustedcontigs" --isolate; done
