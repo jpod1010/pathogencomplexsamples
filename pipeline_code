@@ -20,4 +20,4 @@ ZBM Metagenomes
 /home/jpodowski/src/bbmap/bbduk.sh  in="${i}" out="${i//.fastq.gz}_decontam.fastq.gz"  ref=/home/jpodowski/src/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
 /home/jpodowski/src/bbmap/removehuman.sh path=/home/jpodowski/databases/humangenomes/ in="${i//.fastq.gz}_decontam.fastq.gz" outu="${i//.fastq.gz}_decontam_nohuman.fastq.gz"
 /home/jpodowski/src/bbmap/bbduk.sh  in="${i//.fastq.gz}_decontam_nohuman.fastq.gz" out="${i//.fastq.gz}_decontam_nohuman_qtrimmed.fastq.gz"  trimq=30 qtrim=r
-/home/jpodowski/src/bbmap/bbnorm.sh in="${i//.fastq.gz}_decontam_nohuman_qtrimmed.fastq.gz" out="${i//.fastq.gz}_decontam_nohuman_qtrimmed_bbnorm.fastq.gz" target=40 mindepth=2
+/home/jpodowski/src/bbmap/bbnorm.sh in="${i//.fastq.gz}_decontam_nohuman_qtrimmed.fastq.gz" out="${i//.fastq.gz}_decontam_nohuman_qtrimmed_bbnorm.fastq.gz" target=100 mindepth=2
