@@ -35,3 +35,7 @@ for i in *_bbnorm.fastq.gz ; do /home/jpodowski/src/bbmap/repair.sh in="${i}" ou
 for i in *_bbnorm_repaired.fastq.gz; do /home/jpodowski/src/SPAdes-3.15.4-Linux/bin/spades.py -m 100 --pe1-12 "${i}" --pe1-s "${i//_repaired.fastq.gz}_singleton.fastq.gz" -t 12 --trusted-contigs GCF_000008445.1_ASM844v1_genomic.fa -o "${i//_bbnorm_repaired.fastq.gz}" --isolate; done
 
 for i in *_bbnorm_repaired.fastq.gz; do /home/jpodowski/src/SPAdes-3.15.4-Linux/bin/spades.py -m 100 --pe1-12 "${i}" --pe1-s "${i//_repaired.fastq.gz}_singleton.fastq.gz" -t 12  -o "${i//_bbnorm_repaired.fastq.gz}_notrustedcontigs" --isolate; done
+
+conda activate /home/jpodowski/src/anaconda3locust/envs/cansnper
+
+CanSNPer -i GCF_000008445.1_ASM844v1_genomic.fa -r Bacillus_anthracis -b /home/jpodowski/project/dtra_anthrax/metagenomes/cansnp/CanSNPer-1.0.10/CanSNPerDB.db
