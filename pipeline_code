@@ -29,4 +29,10 @@ MG Method 1
 
 spades.py --meta -m 500 -t 48 --12 "${i}" -o "${i//_interleaved_decontam_nohuman_qtrimmed_bbnorm.fastq.gz}_spades"
 
+source /vol/patric3/cli/ubuntu-cli/user-env.sh
+p3-login jpod1010
+p3-submit-metagenome-binning
+
 MG Method 2
+
+
