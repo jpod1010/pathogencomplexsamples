@@ -41,7 +41,7 @@ bowtie2 --interleaved "${i}" --sensitive --no-unal -p 12 -S "${i//_interleaved_d
 
 /home/jpodowski/src/bbmap/reformat.sh in="${i}" out="${i//.sam}.fastq.gz" pairedonly=t 
 
-bbnorm.sh in="${i}" out="${i//.fastq.gz}_bbnorm.fastq.gz" target=40 mindepth=2
+bbnorm.sh in="${i}" out="${i//.fastq.gz}_bbnorm.fastq.gz" target=100 mindepth=2
 
 /home/jpodowski/src/bbmap/repair.sh in="${i}" out="${i//.fastq.gz}_repaired.fastq.gz" outs="${i//.fastq.gz}_singleton.fastq.gz" ; done
 
