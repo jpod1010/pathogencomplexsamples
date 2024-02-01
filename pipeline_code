@@ -41,13 +41,10 @@ bowtie2 --interleaved "${i}" --sensitive --no-unal -p 12 -S "${i//_interleaved_d
 
 /home/jpodowski/src/bbmap/reformat.sh in="${i}" out="${i//.sam}.fastq.gz" pairedonly=t 
 
-bbnorm.sh in="${i}" out="${i//.fastq.gz}_bbnorm.fastq.gz" target=100 mindepth=2
 
-/home/jpodowski/src/bbmap/repair.sh in="${i}" out="${i//.fastq.gz}_repaired.fastq.gz" outs="${i//.fastq.gz}_singleton.fastq.gz" ; done
+spades.py -m 500 --12 "${i}" -t 36 --trusted-contigs /home/jpodowski/project/dtra_anthrax/metagenomes/raw_fastqs/method2/GCF_000008445.1_ASM844v1_genomic.fa -o "${i//.fastq.gz}_trustedcontigs" --isolate
 
-spades.py -m 500 --pe1-12 "${i}" --pe1-s "${i//_repaired.fastq.gz}_singleton.fastq.gz" -t 12 --trusted-contigs GCF_000008445.1_ASM844v1_genomic.fa -o "${i//_bbnorm_repaired.fastq.gz}" --isolate; done
-
-spades.py -m 500 --pe1-12 "${i}" --pe1-s "${i//_repaired.fastq.gz}_singleton.fastq.gz" -t 12  -o "${i//_bbnorm_repaired.fastq.gz}_notrustedcontigs" --isolate; done
+spades.py -m 500 --12 "${i}" -t 36  -o "${i//.fastq.gz}" --isolate
 
 
 
