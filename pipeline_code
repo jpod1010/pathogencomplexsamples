@@ -27,11 +27,13 @@ ZBM Metagenomes
 
 MG Method 1
 
-spades.py --meta -m 500 -t 48 --12 "${i}" -o "${i//_interleaved_decontam_nohuman_qtrimmed_bbnorm.fastq.gz}_spades"
+megahit --presets meta-sensitive --12 "${i}" -t 96 -m 0.6 -o "${i//interleaved_decontam_nohuman_qtrimmed_bbnorm.fastq.gz}_megahit"
 
 source /vol/patric3/cli/ubuntu-cli/user-env.sh
 p3-login jpod1010
 p3-submit-metagenome-binning
+
+metawrap binning -o "${i}initialbins" -t 36 -a "${i}/final.contigs.fa" --interleaved --metabat2 --maxbin2 --concoct *.fastq
 
 MG Method 2
 
