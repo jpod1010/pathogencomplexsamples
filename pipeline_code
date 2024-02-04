@@ -34,6 +34,7 @@ p3-login jpod1010
 p3-submit-metagenome-binning
 
 metawrap binning -o "${i}initialbins" -t 36 -a "${i}/final.contigs.fa" --interleaved --metabat2 --maxbin2 --concoct *.fastq
+metawrap bin_refinement -o "${i}_refined" -t 96 -A "${i}/metabat2_bins/" -B "${i}/maxbin2_bins" -C "${i}/concoct_bins/" -c 75 -x 5
 
 MG Method 2
 
