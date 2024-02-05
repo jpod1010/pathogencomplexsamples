@@ -33,10 +33,12 @@ source /vol/patric3/cli/ubuntu-cli/user-env.sh
 p3-login jpod1010
 p3-submit-metagenome-binning
 
+MG Method 2
+
 metawrap binning -o "${i}initialbins" -t 36 -a "${i}/final.contigs.fa" --interleaved --metabat2 --maxbin2 --concoct *.fastq
 metawrap bin_refinement -o "${i}_refined" -t 96 -A "${i}/metabat2_bins/" -B "${i}/maxbin2_bins" -C "${i}/concoct_bins/" -c 75 -x 5
 
-MG Method 2
+MG Method 3
 
 bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
 
