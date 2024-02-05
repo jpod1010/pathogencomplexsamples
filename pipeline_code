@@ -49,6 +49,8 @@ bowtie2 --interleaved "${i}" --sensitive --no-unal -p 12 -S "${i//_interleaved_d
 
 spades.py -m 500 --12 "${i}" -t 36 --trusted-contigs /home/jpodowski/project/dtra_anthrax/metagenomes/raw_fastqs/method2/GCF_000008445.1_ASM844v1_genomic.fa -o "${i//.fastq.gz}_trustedcontigs" --isolate
 
+MG Method 4
+
 spades.py -m 500 --12 "${i}" -t 36  -o "${i//.fastq.gz}" --isolate
 
 
