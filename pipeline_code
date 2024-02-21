@@ -78,7 +78,7 @@ bowtie2 --interleaved "${i}" --sensitive --no-unal -p 12 -S "${i//_interleaved_d
 /home/jpodowski/src/bbmap/reformat.sh in="${i//_interleaved_decontam_qtrimmed.fastq.gz}_ag_BanthracisAmes.sam" out="${i//_interleaved_decontam_qtrimmed.fastq.gz}_ag_BanthracisAmes.bam" pairedonly=t minidfilter=0.99
 
 for i in *.bam; do samtools sort "${i}" -o "${i}_sorted"; rm "${i}"; mv "${i}_sorted" "${i}"; done
-
+for i in *.bam; do samtools index "${i}"; done
 
 
 CanSNPer -i bin.5.fa -r Bacillus_anthracis -b /home/jpodowski/project/dtra_anthrax/metagenomes/cansnp/CanSNPer-1.0.10/CanSNPerDB.db
