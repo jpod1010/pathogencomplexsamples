@@ -86,6 +86,7 @@ anvi-gen-contigs-database -f NCBI-GENOMES/Bacillus_anthracis_str___Ames_Ancestor
 anvi-import-functions -c BanthracisAmes.db -i NCBI-GENOMES/Bacillus_anthracis_str___Ames_Ancestor__GCF_000008445_1-external-functions.txt
 anvi-run-hmms -c BanthracisAmes.db -T 48
 
+/home/jpodowski/src/bbmap/reformat.sh in=S19_S217_ag_BanthracisAmes.sam idhist=S19_S217_hist
 
 for i in *.bam; do anvi-profile -i "${i}" -c /home/jpodowski/project/ldrd_anthrax/fastqs/population_genomic/BanthracisAmes.db  -T 64 --profile-SCVs -o "${i//.bam}_profile" --min-percent-identity 98; done
 
