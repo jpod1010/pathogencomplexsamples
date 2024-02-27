@@ -89,6 +89,7 @@ anvi-run-hmms -c BanthracisAmes.db -T 48
 /home/jpodowski/src/bbmap/reformat.sh in=S19_S217_ag_BanthracisAmes.sam idhist=S19_S217_hist
 
 for i in *.bam; do anvi-profile -i "${i}" -c /home/jpodowski/project/ldrd_anthrax/fastqs/population_genomic/BanthracisAmes.db  -T 64 --profile-SCVs -o "${i//.bam}_profile" --min-percent-identity 98; done
+for i in *_profile; do anvi-script-add-default-collection -p "${i}/PROFILE.db";done
 
 
 CanSNPer -i bin.5.fa -r Bacillus_anthracis -b /home/jpodowski/project/dtra_anthrax/metagenomes/cansnp/CanSNPer-1.0.10/CanSNPerDB.db
