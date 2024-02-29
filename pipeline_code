@@ -1,3 +1,14 @@
+
+Sample Percent B anthracis checking
+
+
+
+bracken -d /home/jpodowski/databases/kraken2dbs/pluspf/ -i "${i//_interleaved_decontam.fastq.gz}" -l S -o "${i//_interleaved_decontam.fastq.gz}_species"
+
+for i in *_species; do echo "${i}"; grep "Bacillus anthracis" "${i}"; done
+
+for i in *_R1_001.fastq.gz; do kraken2 --db /home/jpodowski/databases/kraken2dbs/pluspf/ --paired --threads 48 --output - --report "${i//_R1_001.fastq.gz}" "${i}" "${i//_R1_001.fastq.gz}_R2_001.fastq.gz"; done
+
 Isolate Genomes
 
 /home/jpodowski/src/bbmap/bbduk.sh  in="${i}" in2="${i//_R1_001.fastq.gz}_R2_001.fastq.gz" out="${i//_R1_001.fastq.gz}_interleaved_decontam.fastq.gz"  ref=/home/jpodowski/src/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
@@ -90,6 +101,8 @@ anvi-run-hmms -c BanthracisAmes.db -T 48
 
 for i in *.bam; do anvi-profile -i "${i}" -c /home/jpodowski/project/ldrd_anthrax/fastqs/population_genomic/BanthracisAmes.db  -T 64 --profile-SCVs -o "${i//.bam}_profile" --min-percent-identity 98; done
 for i in *_profile; do anvi-script-add-default-collection -p "${i}/PROFILE.db";done
+
+
 
 
 CanSNPer -i bin.5.fa -r Bacillus_anthracis -b /home/jpodowski/project/dtra_anthrax/metagenomes/cansnp/CanSNPer-1.0.10/CanSNPerDB.db
