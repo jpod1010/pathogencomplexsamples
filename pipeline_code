@@ -50,6 +50,8 @@ metawrap binning -o "${i}initialbins" -t 36 -a "${i}/final.contigs.fa" --interle
 
 metawrap bin_refinement -o "${i}_refined" -t 96 -A "${i}/metabat2_bins/" -B "${i}/maxbin2_bins" -C "${i}/concoct_bins/" -c 75 -x 5
 
+gtdbtk classify_wf -x fa --cpus 48 --pplacer_cpus 48 --genome_dir "${i}/metawrap_75_5_bins" --out_dir "${i}/gtdbtk_out"
+
 MG Method 3
 
 bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
