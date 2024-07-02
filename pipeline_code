@@ -67,46 +67,6 @@ MG Method 4
 
 spades.py -m 500 --12 "${i}" -t 36  -o "${i//.fastq.gz}" --isolate
 
-# Public Metagenomes
-
-/home/jpodowski/src/bbmap/bbduk.sh  in="${i}" out="${i//.fastq}_decontam.fastq.gz"  ref=/home/jpodowski/src/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
-/home/jpodowski/src/bbmap/removehuman.sh path=/home/jpodowski/databases/humangenomes/ in="${i//.fastq}_decontam.fastq.gz" outu="${i//.fastq}_decontam_nohuman.fastq.gz"
-/home/jpodowski/src/bbmap/bbduk.sh  in="${i//.fastq.gz}_decontam_nohuman.fastq.gz" out="${i//.fastq}_decontam_nohuman_qtrimmed.fastq.gz"  trimq=30 qtrim=r
-
-bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
-
-bowtie2 --interleaved "${i}" --sensitive --no-unal -p 12 -S "${i//_interleaved_decontam_qtrimmed.fastq.gz}_ag_BanthracisAmes.sam" -x /home/jpodowski/project/dtra_anthrax/metagenomes/raw_fastqs/method2/BanthracisAmes.index
-
-/home/jpodowski/src/bbmap/reformat.sh in="${i}" out="${i//.sam}.fastq.gz" pairedonly=t id
-
-
-spades.py -m 500 --12 "${i}" -t 36 --trusted-contigs /home/jpodowski/project/dtra_anthrax/metagenomes/raw_fastqs/method2/GCF_000008445.1_ASM844v1_genomic.fa -o "${i//.fastq.gz}_trustedcontigs" --isolate
-
-
-MG Mixed Strain Checking
-
-bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
-
-for i in *qtrimmed.fastq.gz ; do bowtie2 --interleaved "${i}" --sensitive --no-unal -p 48 -S "${i//_interleaved_decontam_nohuman_qtrimmed.fastq.gz}_ag_BanthracisAmes.sam" -x /home/jpodowski/project/ldrd_anthrax/fastqs/population_genomic/NCBI-GENOMES/BanthracisAmes.index
-samtools sort "${i//_interleaved_decontam_nohuman_qtrimmed.fastq.gz}_ag_BanthracisAmes.sam" -o "${i//_interleaved_decontam_nohuman_qtrimmed.fastq.gz}_ag_BanthracisAmes.bam"; rm "${i//_interleaved_decontam_nohuman_qtrimmed.fastq.gz}_ag_BanthracisAmes.sam"
-samtools index "${i//_interleaved_decontam_nohuman_qtrimmed.fastq.gz}_ag_BanthracisAmes.bam"
-
-conda deactivate
-conda activate anvio-8
-
-ncbi-genome-download -A GCF_000008445.1 -o banthracisAmes --metadata NCBI-METADATA.txt -s refseq bacteria
-anvi-script-process-genbank-metadata -m NCBI-METADATA.txt -o NCBI-GENOMES --output-fasta-txt fasta.txt
-anvi-gen-contigs-database -f NCBI-GENOMES/Bacillus_anthracis_str___Ames_Ancestor__GCF_000008445_1-contigs.fa --external-gene-calls NCBI-GENOMES/Bacillus_anthracis_str___Ames_Ancestor__GCF_000008445_1-external-gene-calls.txt --skip-mindful-splitting --project-name Bacillus_Anthracis_Ames -o BanthracisAmes.db
-anvi-import-functions -c BanthracisAmes.db -i NCBI-GENOMES/Bacillus_anthracis_str___Ames_Ancestor__GCF_000008445_1-external-functions.txt
-anvi-run-hmms -c BanthracisAmes.db -T 48
-
-/home/jpodowski/src/bbmap/reformat.sh in=S19_S217_ag_BanthracisAmes.sam idhist=S19_S217_hist
-
-for i in *.bam; do anvi-profile -i "${i}" -c /home/jpodowski/project/ldrd_anthrax/fastqs/population_genomic/BanthracisAmes.db  -T 64 --profile-SCVs -o "${i//.bam}_profile" --min-percent-identity 98; done
-for i in *_profile; do anvi-script-add-default-collection -p "${i}/PROFILE.db";done
-
-
-
 
 CanSNPer -i bin.5.fa -r Bacillus_anthracis -b /home/jpodowski/project/dtra_anthrax/metagenomes/cansnp/CanSNPer-1.0.10/CanSNPerDB.db
 
