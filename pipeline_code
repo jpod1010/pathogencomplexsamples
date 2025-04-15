@@ -36,21 +36,28 @@ ZBM Metagenomes
 /home/jpodowski/src/bbmap/bbduk.sh  in="${i//.fastq.gz}_decontam_nohuman.fastq.gz" out="${i//.fastq.gz}_decontam_nohuman_qtrimmed.fastq.gz"  trimq=30 qtrim=r
 /home/jpodowski/src/bbmap/bbnorm.sh in="${i//.fastq.gz}_decontam_nohuman_qtrimmed.fastq.gz" out="${i//.fastq.gz}_decontam_nohuman_qtrimmed_bbnorm.fastq.gz" target=100 mindepth=2
 
+
+
 MG Method 1
 
 megahit --presets meta-sensitive --12 "${i}" -t 96 -m 0.6 -o "${i//interleaved_decontam_nohuman_qtrimmed_bbnorm.fastq.gz}_megahit"
-
-source /vol/patric3/cli/ubuntu-cli/user-env.sh
-p3-login jpod1010
-p3-submit-metagenome-binning
-
-MG Method 2
 
 metawrap binning -o "${i}initialbins" -t 36 -a "${i}/final.contigs.fa" --interleaved --metabat2 --maxbin2 --concoct "${i//_megahit}_interleaved_decontam_nohuman_qtrimmed.fastq"
 
 metawrap bin_refinement -o "${i}_refined" -t 96 -A "${i}/metabat2_bins/" -B "${i}/maxbin2_bins" -C "${i}/concoct_bins/" -c 75 -x 5
 
 gtdbtk classify_wf -x fa --cpus 48 --pplacer_cpus 48 --genome_dir "${i}/metawrap_75_5_bins" --out_dir "${i}/gtdbtk_out"
+
+MG Method 2
+
+megahit --presets meta-sensitive --12 "${i}" -t 96 -m 0.6 -o "${i//interleaved_decontam_nohuman_qtrimmed_bbnorm.fastq.gz}_megahit"
+
+# this invokes metagenomic binning through BV-BRC - this can be carried out by other users through https://www.bv-brc.org/app/MetagenomicBinning which can be accessed through a free user account
+
+source /vol/patric3/cli/ubuntu-cli/user-env.sh
+p3-login jpod1010
+p3-submit-metagenome-binning
+
 
 MG Method 3
 
@@ -60,13 +67,19 @@ bowtie2 --interleaved "${i}" --sensitive --no-unal -p 12 -S "${i//_interleaved_d
 
 /home/jpodowski/src/bbmap/reformat.sh in="${i}" out="${i//.sam}.fastq.gz" pairedonly=t
 
-
-spades.py -m 500 --12 "${i}" -t 36 --trusted-contigs /home/jpodowski/project/dtra_anthrax/metagenomes/raw_fastqs/method2/GCF_000008445.1_ASM844v1_genomic.fa -o "${i//.fastq.gz}_trustedcontigs" --isolate
+spades.py -m 500 --12 "${i}" -t 36  -o "${i//.fastq.gz}" --isolate
 
 MG Method 4
 
-spades.py -m 500 --12 "${i}" -t 36  -o "${i//.fastq.gz}" --isolate
+bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
 
+bowtie2 --interleaved "${i}" --sensitive --no-unal -p 12 -S "${i//_interleaved_decontam_qtrimmed.fq.gz}_ag_BanthracisAmes.sam" -x /home/jpodowski/project/ldrd_anthrax/fastqs/population_genomic/NCBI-GENOMES/BanthracisAmes.index
+
+/home/jpodowski/src/bbmap/reformat.sh in="${i}" out="${i//.sam}.fastq.gz" pairedonly=t
+
+spades.py -m 500 --12 "${i}" -t 36 --trusted-contigs GCF_000008445.1_ASM844v1_genomic.fa -o "${i//.fastq.gz}_trustedcontigs" --isolate
+
+# CanSNPer assignment
 
 CanSNPer -i bin.5.fa -r Bacillus_anthracis -b /home/jpodowski/project/dtra_anthrax/metagenomes/cansnp/CanSNPer-1.0.10/CanSNPerDB.db
 
