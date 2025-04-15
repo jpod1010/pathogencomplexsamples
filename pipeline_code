@@ -52,7 +52,7 @@ MG Method 2
 
 megahit --presets meta-sensitive --12 "${i}" -t 96 -m 0.6 -o "${i//interleaved_decontam_nohuman_qtrimmed_bbnorm.fastq.gz}_megahit"
 
-# this invokes metagenomic binning through BV-BRC - this can be carried out by other users through https://www.bv-brc.org/app/MetagenomicBinning which can be accessed through a free user account
+# this invokes metagenomic binning through BV-BRC - this can be carried out either by installing bv-brc command line interface (CLI) https://www.bv-brc.org/docs/cli_tutorial/cli_installation.html#cli-installation or through https://www.bv-brc.org/app/MetagenomicBinning which can be accessed through a free user account
 
 source /vol/patric3/cli/ubuntu-cli/user-env.sh
 p3-login jpod1010
