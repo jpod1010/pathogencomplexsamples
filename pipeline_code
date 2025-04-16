@@ -40,13 +40,13 @@ spades.py -m 100 --12 "${i}" -t 48 --isolate -o "${i//_interleaved_decontam_nohu
 
 #MG Method 1
 
-megahit --presets meta-sensitive --12 "${i}" -t 96 -m 0.6 -o "${i//interleaved_decontam_nohuman_qtrimmed_bbnorm.fastq.gz}_megahit"
+megahit --presets meta-sensitive --12 Clean_Reads.fq.gz -t 96 -m 0.6 -o megahit_assembly
 
-metawrap binning -o "${i}initialbins" -t 36 -a "${i}/final.contigs.fa" --interleaved --metabat2 --maxbin2 --concoct "${i//_megahit}_interleaved_decontam_nohuman_qtrimmed.fastq"
+metawrap binning -o megahit_assembly_initialbins -t 36 -a megahit_assembly/final.contigs.fa --interleaved --metabat2 --maxbin2 --concoct Clean_Reads.fq.gz
 
-metawrap bin_refinement -o "${i}_refined" -t 96 -A "${i}/metabat2_bins/" -B "${i}/maxbin2_bins" -C "${i}/concoct_bins/" -c 75 -x 5
+metawrap bin_refinement -o megahit_assembly_initialbins_refined -t 96 -A megahit_assembly_initialbins/metabat2_bins/ -B megahit_assembly_initialbins/maxbin2_bins -C megahit_assembly_initialbins/concoct_bins/ -c 75 -x 5
 
-gtdbtk classify_wf -x fa --cpus 48 --pplacer_cpus 48 --genome_dir "${i}/metawrap_75_5_bins" --out_dir "${i}/gtdbtk_out"
+gtdbtk classify_wf -x fa --cpus 48 --pplacer_cpus 48 --genome_dir megahit_assembly_initialbins_refined/metawrap_75_5 --out_dir megahit_assembly_initialbins_refined/gtdbtk_out
 
 #MG Method 2
 
@@ -79,6 +79,6 @@ spades.py -m 500 --12 Clean_Reads_ag_BanthracisAmes.fastq.gz -t 36 --trusted-con
 
 # CanSNPer assignment
 
-CanSNPer -i bin.5.fa -r Bacillus_anthracis -b CanSNPerDB.db
+CanSNPer -i Genome.fasta -r Bacillus_anthracis -b CanSNPerDB.db
 
 
