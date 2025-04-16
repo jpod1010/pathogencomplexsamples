@@ -1,21 +1,18 @@
 
 # Sample Percent B anthracis checking
 
-
 kraken2 --db pluspf --paired --threads 48 --output - --report Clean_Reads.fq.gz
 
 bracken -d pluspf -i Clean_Reads.fq.gz -l S -o Bracken_Report_Species
 
 
 
-
-
 # Isolate Genomes
 
-/home/jpodowski/src/bbmap/bbduk.sh  in="${i}" in2="${i//_R1_001.fastq.gz}_R2_001.fastq.gz" out="${i//_R1_001.fastq.gz}_interleaved_decontam.fastq.gz"  ref=/home/jpodowski/src/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
-/home/jpodowski/src/bbmap/removehuman.sh path=/home/jpodowski/databases/humangenomes/ in="${i//_R1_001.fastq.gz}_interleaved_decontam.fastq.gz" outu="${i//_R1_001.fastq.gz}_interleaved_decontam_nohuman.fastq.gz"
-/home/jpodowski/src/bbmap/bbduk.sh  in="${i//_R1_001.fastq.gz}_interleaved_decontam_nohuman.fastq.gz" out="${i//_R1_001.fastq.gz}_interleaved_decontam_nohuman_qtrimmed.fastq.gz"  trimq=30 qtrim=r
-/home/jpodowski/src/bbmap/bbnorm.sh in="${i//_R1_001.fastq.gz}_interleaved_decontam_nohuman_qtrimmed.fastq.gz" out=Clean_Reads.fq.gz target=100 mindepth=2
+bbduk.sh  in=Raw_Reads_R1.fq.gz in2=Raw_Reads_R2.fq.gz out=Raw_Reads_Decontam.fq.gz  ref=/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
+removehuman.sh path=/humangenomes/ in=Raw_Reads_Decontam.fq.gz outu=Raw_Reads_Decontam_NoHuman.fq.gz
+bbduk.sh  in=Raw_Reads_Decontam_NoHuman.fq.gz out=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  trimq=30 qtrim=r
+bbnorm.sh in=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  out=Clean_Reads.fq.gz target=100 mindepth=2
 
 spades.py -m 100 --12 Clean_Reads.fq.gz -t 48 --isolate -o assembly_spades
 
@@ -23,11 +20,10 @@ spades.py -m 100 --12 Clean_Reads.fq.gz -t 48 --isolate -o assembly_spades
 #Metagenomes
 
 
-/home/jpodowski/src/bbmap/bbduk.sh  in="${i}" out="${i//.fastq.gz}_decontam.fastq.gz"  ref=/home/jpodowski/src/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
-/home/jpodowski/src/bbmap/removehuman.sh path=/home/jpodowski/databases/humangenomes/ in="${i//.fastq.gz}_decontam.fastq.gz" outu="${i//.fastq.gz}_decontam_nohuman.fastq.gz"
-/home/jpodowski/src/bbmap/bbduk.sh  in="${i//.fastq.gz}_decontam_nohuman.fastq.gz" out="${i//.fastq.gz}_decontam_nohuman_qtrimmed.fastq.gz"  trimq=30 qtrim=r
-/home/jpodowski/src/bbmap/bbnorm.sh in="${i//.fastq.gz}_decontam_nohuman_qtrimmed.fastq.gz" out=Clean_Reads.fq.gz target=100 mindepth=2
-
+bbduk.sh  in=Raw_Reads_R1.fq.gz in2=Raw_Reads_R2.fq.gz out=Raw_Reads_Decontam.fq.gz  ref=/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
+removehuman.sh path=/humangenomes/ in=Raw_Reads_Decontam.fq.gz outu=Raw_Reads_Decontam_NoHuman.fq.gz
+bbduk.sh  in=Raw_Reads_Decontam_NoHuman.fq.gz out=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  trimq=30 qtrim=r
+bbnorm.sh in=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  out=Clean_Reads.fq.gz target=100 mindepth=2
 
 
 #MG Method 1
