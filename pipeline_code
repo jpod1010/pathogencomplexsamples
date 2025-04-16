@@ -47,6 +47,8 @@ p3-submit-metagenome-binning megahit_assembly.fa
 
 #MG Method 3
 
+# Bacillus anthracis 'Ames Ancestor' GCF_000008445.1 downloaded from https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/445/GCF_000008445.1_ASM844v1/GCF_000008445.1_ASM844v1_genomic.fna.gz
+
 bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
 
 bowtie2 --interleaved Clean_Reads.fq.gz --sensitive --no-unal -p 12 -S Clean_Reads_ag_BanthracisAmes.sam -x BanthracisAmes.index
@@ -56,6 +58,8 @@ reformat.sh in=Clean_Reads_ag_BanthracisAmes.sam out=Clean_Reads_ag_BanthracisAm
 spades.py -m 500 --12 Clean_Reads_ag_BanthracisAmes.fastq.gz -t 36  -o spades_assembly.fa --isolate
 
 #MG Method 4
+
+# Bacillus anthracis 'Ames Ancestor' GCF_000008445.1 downloaded from https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/445/GCF_000008445.1_ASM844v1/GCF_000008445.1_ASM844v1_genomic.fna.gz
 
 bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
 
