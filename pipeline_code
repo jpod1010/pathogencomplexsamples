@@ -10,7 +10,7 @@ bbnorm.sh in=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  out=Clean_Reads.fq
 spades.py -m 100 --12 Clean_Reads.fq.gz -t 48 --isolate -o assembly_spades
 
 
-#Metagenomes
+# Metagenomes
 
 
 bbduk.sh  in=Raw_Reads_R1.fq.gz in2=Raw_Reads_R2.fq.gz out=Raw_Reads_Decontam.fq.gz  ref=/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
@@ -19,7 +19,7 @@ bbduk.sh  in=Raw_Reads_Decontam_NoHuman.fq.gz out=Raw_Reads_Decontam_NoHuman_Qua
 bbnorm.sh in=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  out=Clean_Reads.fq.gz target=100 mindepth=2
 
 
-#MG Method 1
+# MG Method 1 - Untargeted
 
 megahit --presets meta-sensitive --12 Clean_Reads.fq.gz -t 96 -m 0.6 -o megahit_assembly
 
@@ -29,7 +29,7 @@ metawrap bin_refinement -o megahit_assembly_initialbins_refined -t 96 -A megahit
 
 gtdbtk classify_wf -x fa --cpus 48 --pplacer_cpus 48 --genome_dir megahit_assembly_initialbins_refined/metawrap_75_5 --out_dir megahit_assembly_initialbins_refined/gtdbtk_out
 
-#MG Method 2
+#MG Method 2 - Semitargeted
 
 megahit --presets meta-sensitive --12 Clean_Reads.fq.gz -t 96 -m 0.6 -o megahit_assembly
 
@@ -38,7 +38,7 @@ megahit --presets meta-sensitive --12 Clean_Reads.fq.gz -t 96 -m 0.6 -o megahit_
 p3-submit-metagenome-binning megahit_assembly.fa
 
 
-#MG Method 3
+#MG Method 3 - Targeted
 
 # Bacillus anthracis 'Ames Ancestor' GCF_000008445.1 downloaded from https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/445/GCF_000008445.1_ASM844v1/GCF_000008445.1_ASM844v1_genomic.fna.gz
 
@@ -50,7 +50,7 @@ reformat.sh in=Clean_Reads_ag_BanthracisAmes.sam out=Clean_Reads_ag_BanthracisAm
 
 spades.py -m 500 --12 Clean_Reads_ag_BanthracisAmes.fastq.gz -t 36  -o spades_assembly.fa --isolate
 
-#MG Method 4
+#MG Method 4 - Highly Targeted
 
 # Bacillus anthracis 'Ames Ancestor' GCF_000008445.1 downloaded from https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/445/GCF_000008445.1_ASM844v1/GCF_000008445.1_ASM844v1_genomic.fna.gz
 
