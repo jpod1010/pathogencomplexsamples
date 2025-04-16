@@ -1,11 +1,4 @@
 
-# Sample Percent B anthracis checking
-
-krakenuniq --db MicrobialDB --paired --preload --threads 48 --output - --report-file KrakenUniq_Report_Out Clean_Reads.fq.gz
-
-bracken -d MicrobialDB  -i KrakenUniq_Report_Out -l S -o Bracken_Report_Species
-
-
 
 # Isolate Genomes
 
@@ -72,5 +65,12 @@ spades.py -m 500 --12 Clean_Reads_ag_BanthracisAmes.fastq.gz -t 36 --trusted-con
 # CanSNPer assignment
 
 CanSNPer -i Genome.fasta -r Bacillus_anthracis -b CanSNPerDB.db
+
+
+# Sample Percent B anthracis checking
+
+krakenuniq --db MicrobialDB --paired --preload --threads 48 --output - --report-file KrakenUniq_Report_Out Clean_Reads.fq.gz
+
+bracken -d MicrobialDB  -i KrakenUniq_Report_Out -l S -o Bracken_Report_Species
 
 
