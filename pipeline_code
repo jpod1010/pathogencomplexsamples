@@ -4,10 +4,10 @@
 
 bbduk.sh  in=Raw_Reads_R1.fq.gz in2=Raw_Reads_R2.fq.gz out=Raw_Reads_Decontam.fq.gz  ref=/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
 removehuman.sh path=/humangenomes/ in=Raw_Reads_Decontam.fq.gz outu=Raw_Reads_Decontam_NoHuman.fq.gz
-bbduk.sh  in=Raw_Reads_Decontam_NoHuman.fq.gz out=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  trimq=30 qtrim=r
-bbnorm.sh in=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  out=Clean_Reads.fq.gz target=100 mindepth=2
+bbduk.sh  in=Raw_Reads_Decontam_NoHuman.fq.gz out=Clean_Reads.fq.gz  trimq=30 qtrim=r
+bbnorm.sh in=Clean_Reads.fq.gz  out=Clean_Reads_Digi_Norm.fq.gz target=100 mindepth=2
 
-spades.py -m 100 --12 Clean_Reads.fq.gz -t 48 --isolate -o assembly_spades
+spades.py -m 100 --12 Clean_Reads_Digi_Norm.fq.gz -t 48 --isolate -o assembly_spades
 
 
 # Metagenomes
@@ -15,13 +15,12 @@ spades.py -m 100 --12 Clean_Reads.fq.gz -t 48 --isolate -o assembly_spades
 
 bbduk.sh  in=Raw_Reads_R1.fq.gz in2=Raw_Reads_R2.fq.gz out=Raw_Reads_Decontam.fq.gz  ref=/bbmap/resources/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo
 removehuman.sh path=/humangenomes/ in=Raw_Reads_Decontam.fq.gz outu=Raw_Reads_Decontam_NoHuman.fq.gz
-bbduk.sh  in=Raw_Reads_Decontam_NoHuman.fq.gz out=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  trimq=30 qtrim=r
-bbnorm.sh in=Raw_Reads_Decontam_NoHuman_QualityTrimmed.fq.gz  out=Clean_Reads.fq.gz target=100 mindepth=2
-
+bbduk.sh  in=Raw_Reads_Decontam_NoHuman.fq.gz out=Clean_Reads.fq.gz  trimq=30 qtrim=r
+bbnorm.sh in=Clean_Reads.fq.gz  out=Clean_Reads_Digi_Norm.fq.gz target=100 mindepth=2
 
 # MG Method 1 - Untargeted
 
-megahit --presets meta-sensitive --12 Clean_Reads.fq.gz -t 96 -m 0.6 -o megahit_assembly
+megahit --presets meta-sensitive --12 Clean_Reads_Digi_Norm.fq.gz -t 96 -m 0.6 -o megahit_assembly
 
 metawrap binning -o megahit_assembly_initialbins -t 36 -a megahit_assembly/final.contigs.fa --interleaved --metabat2 --maxbin2 --concoct Clean_Reads.fq.gz
 
@@ -31,7 +30,7 @@ gtdbtk classify_wf -x fa --cpus 48 --pplacer_cpus 48 --genome_dir megahit_assemb
 
 #MG Method 2 - Semitargeted
 
-megahit --presets meta-sensitive --12 Clean_Reads.fq.gz -t 96 -m 0.6 -o megahit_assembly
+megahit --presets meta-sensitive --12 Clean_Reads_Digi_Norm.fq.gz -t 96 -m 0.6 -o megahit_assembly
 
 # this invokes metagenomic binning through BV-BRC - this can be carried out either by installing bv-brc command line interface (CLI) https://www.bv-brc.org/docs/cli_tutorial/cli_installation.html#cli-installation or through https://www.bv-brc.org/app/MetagenomicBinning which can be accessed through a free user account
 
@@ -44,11 +43,11 @@ p3-submit-metagenome-binning megahit_assembly.fa
 
 bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
 
-bowtie2 --interleaved Clean_Reads.fq.gz --sensitive --no-unal -p 12 -S Clean_Reads_ag_BanthracisAmes.sam -x BanthracisAmes.index
+bowtie2 --interleaved Clean_Reads_Digi_Norm.fq.gz --sensitive --no-unal -p 12 -S Clean_Reads_Digi_Norm_ag_BanthracisAmes.sam -x BanthracisAmes.index
 
-reformat.sh in=Clean_Reads_ag_BanthracisAmes.sam out=Clean_Reads_ag_BanthracisAmes.fastq.gz pairedonly=t
+reformat.sh in=Clean_Reads_Digi_Norm_ag_BanthracisAmes.sam  out=Clean_Reads_Digi_Norm_ag_BanthracisAmes.fastq.gz pairedonly=t
 
-spades.py -m 500 --12 Clean_Reads_ag_BanthracisAmes.fastq.gz -t 36  -o spades_assembly.fa --isolate
+spades.py -m 500 --12 Clean_Reads_Digi_Norm_ag_BanthracisAmes.fastq.gz -t 36  -o spades_assembly.fa --isolate
 
 #MG Method 4 - Highly Targeted
 
@@ -56,11 +55,11 @@ spades.py -m 500 --12 Clean_Reads_ag_BanthracisAmes.fastq.gz -t 36  -o spades_as
 
 bowtie2-build GCF_000008445.1_ASM844v1_genomic.fna BanthracisAmes.index
 
-bowtie2 --interleaved Clean_Reads.fq.gz --sensitive --no-unal -p 12 -S Clean_Reads_ag_BanthracisAmes.sam -x BanthracisAmes.index
+bowtie2 --interleaved Clean_Reads_Digi_Norm.fq.gz --sensitive --no-unal -p 12 -S Clean_Reads_Digi_Norm_ag_BanthracisAmes.sam  -x BanthracisAmes.index
 
-reformat.sh in=Clean_Reads_ag_BanthracisAmes.sam  out=Clean_Reads_ag_BanthracisAmes.fastq.gz pairedonly=t
+reformat.sh in=Clean_Reads_ag_BanthracisAmes.sam  out=Clean_Reads_Digi_Norm_ag_BanthracisAmes.fastq.gz pairedonly=t
 
-spades.py -m 500 --12 Clean_Reads_ag_BanthracisAmes.fastq.gz -t 36 --trusted-contigs GCF_000008445.1_ASM844v1_genomic.fa -o spades_assembly_trustedcontigs.fa --isolate
+spades.py -m 500 --12 Clean_Reads_Digi_Norm_ag_BanthracisAmes.fastq.gz -t 36 --trusted-contigs GCF_000008445.1_ASM844v1_genomic.fa -o spades_assembly_trustedcontigs.fa --isolate
 
 # CanSNPer assignment
 
